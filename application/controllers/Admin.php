@@ -1,18 +1,17 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
-class Admin extends CI_Controller 
+class Admin extends CI_Controller
 {
 	function __construct()
 	{
-		parent:: __construct();
+		parent::__construct();
 		$this->load->model('my_model');
 	}
 
 	public function index()
 	{
 		$this->load->view('v_login');
-
 	}
 
 	function login()
@@ -20,22 +19,20 @@ class Admin extends CI_Controller
 		$username = $this->input->post('username');
 		$password = $this->input->post('password');
 
-		$this->form_validation->set_rules('username','Username','trim|required');
-		$this->form_validation->set_rules('password','Password','trim|required');
+		$this->form_validation->set_rules('username', 'Username', 'trim|required');
+		$this->form_validation->set_rules('password', 'Password', 'trim|required');
 
-		if ($this->form_validation->run() != false )
-		{
-			$where = array (
+		if ($this->form_validation->run() != false) {
+			$where = array(
 				'username' => $username,
 				'password' => md5($password)
 			);
 
-			$data = $this->my_model->edit_data($where,'tb_pengguna');
-			$d = $this->my_model->edit_data($where,'tb_pengguna')->row();
+			$data = $this->my_model->edit_data($where, 'tb_pengguna');
+			$d = $this->my_model->edit_data($where, 'tb_pengguna')->row();
 			$cek = $data->num_rows();
 
-			if ($cek > 0)
-			{
+			if ($cek > 0) {
 				$session = array(
 					'id' => $d->id,
 					'nama' => $d->nama,
@@ -47,23 +44,15 @@ class Admin extends CI_Controller
 				);
 
 				$this->session->set_userdata($session);
-				if($d->idcabang == NULL)
-				{
-					redirect(base_url().'cabang');
+				if ($d->idcabang == NULL) {
+					redirect(base_url() . 'cabang');
+				} else {
+					redirect(base_url() . 'page');
 				}
-				else
-				{
-					redirect(base_url().'page');
-				}
-					
+			} else {
+				redirect(base_url() . 'admin?pesan=gagal');
 			}
-			else
-			{
-				redirect(base_url().'admin?pesan=gagal');
-			}
-		}
-		else
-		{
+		} else {
 			$this->load->view('v_login');
 		}
 	}
@@ -75,25 +64,22 @@ class Admin extends CI_Controller
 		$dpassword = $this->input->post('dpassword');
 		$dlevel = $this->input->post('dlevel');
 
-		$this->form_validation->set_rules('dnama','Nama','required');
-		$this->form_validation->set_rules('dusername','Username','required');
-		$this->form_validation->set_rules('dpassword','Password','required');
-		$this->form_validation->set_rules('dpassword','Password','required');
-		
-		if ($this->form_validation->run() != false)
-		{
-			$data = array (
+		$this->form_validation->set_rules('dnama', 'Nama', 'required');
+		$this->form_validation->set_rules('dusername', 'Username', 'required');
+		$this->form_validation->set_rules('dpassword', 'Password', 'required');
+		$this->form_validation->set_rules('dpassword', 'Password', 'required');
+
+		if ($this->form_validation->run() != false) {
+			$data = array(
 				'nama' => $dnama,
 				'username' => $dusername,
 				'password' => md5($dpassword),
 				'level' => $dlevel
 			);
-			$this->my_model->tambahdata($data,'tb_pengguna');
-			redirect(base_url().'admin?pesan=daftar');
-		}
-		else
-		{
-			redirect(base_url().'admin?pesan=daftargagal');
+			$this->my_model->tambahdata($data, 'tb_pengguna');
+			redirect(base_url() . 'admin?pesan=daftar');
+		} else {
+			redirect(base_url() . 'admin?pesan=daftargagal');
 		}
 	}
 }
